@@ -59,6 +59,22 @@ function BrushableBarChart() {
         }
         return this._axisXTickFormat;
     }
+
+    this.x = function() {
+        if (arguments.length > 0) {
+            this._x = arguments[0];
+            return this;
+        }
+        return this._x;
+    }
+
+    this.y = function() {
+        if (arguments.length > 0) {
+            this._y = arguments[0];
+            return this;
+        }
+        return this._y;
+    }
     
     this.draw = function () {
         this._scaleX = d3.scaleBand()

@@ -18,24 +18,32 @@ d3.csv('data/flights-3m.csv', function(d) {
     console.log(data.length, data[0]);
 
     cf = crossfilter(data);
-    dateDimension = cf.dimension(d => dayOfYear(d.date));
-    timeDimension = cf.dimension(d => d.date.getHours());
+    dateDimension = cf.dimension(d => +dayOfYear(d.date));
+    timeDimension = cf.dimension(d => +d.date.getHours());
 
-    let groupedData = dateDimension.group(d => d);
+    let groupedData = dateDimension.group(d => d)
+        .reduceCount()
+        .top(Infinity);
 
     let brushChart = new BrushableBarChart();
     brushChart.selection(d3.select('svg#dates-overview'))
-        .data(groupedData)
+        .data(groupedData.sort((a, b) => a.key > b.key))
         .axisXTickValues((d, i) => i%4==0)
         .axisXTickFormat(formatDateXTicks)
+        .y(d => d.value)
+        .x(d => d.key)
         .dispatch(dispatch, 'date');
     brushChart.draw();
 
-    let timeGroups = timeGroups.group(d => d);
+    let timeGroups = timeDimension.group(d => d)
+        .reduceCount()
+        .top(Infinity);
 
     let distanceBrushChart = new BrushableBarChart();
     distanceBrushChart.selection(d3.select('svg#time-overview'))
-        .data(timeGroups)
+        .data(timeGroups.sort((a, b) => a.key > b.key))
+        .y(d => d.value)
+        .x(d => d.key)
         .dispatch(dispatch, 'time');
     distanceBrushChart.draw();
 
