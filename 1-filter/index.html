@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Viz Tech 2 | Week 11</title>
+
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/6.5.0/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crossfilter2/1.5.4/crossfilter.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Crossfilter</h1>
+        <h3>Dates</h3>
+        <svg id="dates-overview">
+        </svg>
+        <h3>Time of the day</h3>
+        <svg id="time-overview">
+        </svg>
+        <div class="flights-table">
+
+            <div class="flights-header">
+                <div class="date">Date</div>
+                <div class="origin">Origin</div>
+                <div class="destination">Destination</div>
+                <div class="distance right-align">Distance</div>
+                <div class="delay right-align">Delay</div>
+            </div>
+
+            <div id="flights-list">
+                <div class="flight">
+                    <div class="date">Feb 6</div>
+                    <div class="origin">origin</div>
+                    <div class="destination">destination</div>
+                    <div class="distance right-align">distance</div>
+                    <div class="delay right-align">delay</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+    <script src="scripts-complete/BrushableBarChart.js"></script>
+    <script src="scripts-complete/FlightsTable.js"></script>
+    <script src="scripts-complete/script.js"></script>
+
+
+    <!-- <script src="scripts/BrushableBarChart.js"></script>
+    <script src="scripts/FlightsTable.js"></script>
+    <script src="scripts/script.js"></script> -->
+</body>
+</html>

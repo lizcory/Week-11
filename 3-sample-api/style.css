@@ -1,0 +1,12 @@
+html, body {
+    font-family: sans-serif;
+}
+
+.container {
+    width: 1000px;
+    margin: auto;
+}
+
+img {
+    width: 100%;
+}
