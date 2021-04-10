@@ -17,6 +17,58 @@ d3.csv('data/flights-3m.csv', function(d) {
 .then(function(data) {
     console.log(data.length, data[0]);
 
+    cf = crossfilter(data);
+    dateDimension = cf.dimension(d => +dayOfYear(d.date));
+    timeDimension = cf.dimension(d => d.date.getHours());
+
+    let dateGroupData = dateDimension.group(d => d)
+        .reduceCount()  // count num rows for each date in the year
+        .top(Infinity)
+        .sort((a,b) => a.key - b.key);
+    
+    console.log(dateGroupData);
+
+    let dateChart = new BrushableBarChart();
+    dateChart.selection(d3.select("svg#dates-overview"))
+        .data(dateGroupData)
+        .x(d => d.key)
+        .y(d => d.value)
+        .axisXTickValues((d,i) => i%4 === 0)
+        .axisXTickFormat(formatDateXTicks)
+        .dispatch(dispatch, "date");
+
+    dateChart.draw();
+
+    let timeGroupData = timeDimension.group(d => d)
+        .reduceCount()
+        .top(Infinity)
+        .sort((a, b) => a.key - b.key);
+    
+    let timeChart = new BrushableBarChart();
+    timeChart.selection(d3.select("svg#time-overview"))
+        .data(timeGroupData)
+        .x(d => d.key)
+        .y(d => d.value)
+        .dispatch(dispatch, "time");
+    timeChart.draw();
+
+    populateTable(data);
+
+    dispatch.on("brushed", function(type, limits) {
+        switch(type) {
+            case "date":
+                dateDimension.filterRange(limits);
+                break;
+
+            case "time":
+                timeDimension.filterRange(limits);
+                break;
+        }
+
+        let filteredData = dateDimension.bottom(Infinity);
+        populateTable(filteredData);
+    });
+
 });
 
 

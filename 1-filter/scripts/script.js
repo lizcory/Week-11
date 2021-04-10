@@ -15,6 +15,74 @@ d3.csv('data/flights-3m.csv', function(d) {
 })
 .then(function(data) {
     console.log(data.length, data[0]);
+
+    // For Date Chart
+    // grouping all the flights by day in each year
+    let groupedData = d3.group(data, d => dayOfYear(d.date));
+    groupedData = Array.from(groupedData).sort((a,b) => a[0] - b[0]);
+    console.log(groupedData);
+
+    let dateChart = new BrushableBarChart();
+    dateChart.selection(d3.select('svg#dates-overview'))
+        .data(groupedData)
+        .dispatch(dispatch, "dates")
+        .axisXTickValues((d,i) => i%4 === 0)
+        .axisXTickFormat(formatDateXTicks);
+    dateChart.draw();
+
+    // For Time Chart
+    let timeGroupData = d3.group(data, d => d.date.getHours()); 
+    timeGroupData = Array.from(timeGroupData).sort((a,b) => a[0] - b[0]); // convert to an array (since d3.group returns an array)
+
+    let timeChart = new BrushableBarChart();
+    timeChart.selection(d3.select('svg#time-overview'))
+        .data(timeGroupData)
+        // .axisXTickValues([...Array(24).keys()])
+        .dispatch(dispatch, "time");
+    timeChart.draw();
+
+    populateTable(data);
+
+    dispatch.on("brushed", function(type, limits) {
+        // console.log(type, limits);
+        switch(type) {
+            case "dates":
+                filters.date = limits;
+                break;
+
+            case "time":
+                filters.time = limits;
+                break;
+
+        }
+
+        let filteredData = data;
+        if (filters.date) {
+
+            let [lower, upper] = filters.date;
+
+            filteredData = filteredData.filter(d => {
+                let doy = dayOfYear(d.date);
+                return lower <= doy && doy <= upper;
+            })
+        }
+
+
+        if (filters.time) {
+
+            let [lower, upper] = filters.time;
+
+            filteredData = filteredData.filter(d => {
+                let hour = d.date.getHours();
+                return lower <= hour && hour <= upper;
+            })
+        }
+
+
+
+    populateTable(filteredData);
+
+    });
 });
 
 

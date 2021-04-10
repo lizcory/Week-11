@@ -2,8 +2,8 @@ function BrushableBarChart() {
 
     const margin = {t: 50, r:50, b: 50, l: 50};
     const size = {w: 1000, h: 300};
-    this._x = d => d[0];
-    this._y = d => d[1].length;
+    this._x = d => d[0]; // d.key
+    this._y = d => d[1].length; // d.value
     this._axisXTickValues = d => true;
     this._axisXTickFormat = d => d;
     this._dispatchType = '';
@@ -60,6 +60,30 @@ function BrushableBarChart() {
         return this._axisXTickFormat;
     }
     
+
+    this.x = function() {
+        if (arguments.length > 0) {
+            this._x = arguments[0];
+            return this;
+        }
+
+        return this._x
+
+    }
+
+
+    this.y = function() {
+        if (arguments.length > 0) {
+            this._y = arguments[0];
+            return this;
+        }
+
+        return this._y
+    }
+
+
+
+
     this.draw = function () {
         this._scaleX = d3.scaleBand()
             .domain(this._data.map(this._x))
